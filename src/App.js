@@ -1,11 +1,8 @@
 import React, {useRef, useState} from "react";
-import Counter from "./components/Counter";
-import ClassCounter from "./components/ClassCounter";
 import './styles/App.css';
 import PostList from "./components/PostList";
-import MyButton from "./components/UI/button/MyButton";
-import MyInput from "./components/UI/input/MyInput";
 import PostForm from "./components/PostForm";
+import MySelect from "./components/UI/select/MySelect";
 function App() {
 
   const [posts, setPosts] = useState([
@@ -13,6 +10,8 @@ function App() {
       {id:1, title: 'Mayble2', body: 'Description'},
       {id:3, title: 'Mayble3', body: 'Description'},
   ])
+
+    const [selectedSort, setSelectedSort] = useState('')
 
     const createPost = (newPost)=>{
       setPosts([...posts,newPost])
@@ -22,10 +21,36 @@ function App() {
         setPosts(posts.filter(p => p.id !== post.id))
     }
 
+    const sortPosts = (sort) => {
+        setSelectedSort(sort);
+        setPosts([...posts].sort())
+
+    }
+
     return (
     <div className="App">
         <PostForm create={createPost} />
-        <PostList remove={removePost} posts={posts} title="Персонажи Гравити Фолз"/>
+        <hr style={{margin: '15px 0'}}/>
+        <div>
+            <MySelect
+                value={selectedSort}
+                onChange={sortPosts()}
+                defaultValue="Sort"
+                options={[
+                    {value:'title', name: 'by name'},
+                    {value:'body', name: 'by description'},
+                ]}
+            />
+        </div>
+        {posts.length
+            ?
+            <PostList remove={removePost} posts={posts} title="Gravity Falls characters"/>
+            :
+            <h1 style={{textAlign: 'center'}}>
+                Gravity Falls characters not found
+            </h1>
+        }
+
 
     </div>
   );
